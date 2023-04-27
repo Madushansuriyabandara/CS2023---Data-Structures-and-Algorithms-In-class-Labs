@@ -7,78 +7,85 @@ struct node {
 };
 
 // Inorder traversal
-void traverseInOrder(struct node *root){
-  if(root == NULL){
-    return;
-  }
-  traverseInOrder(root->left);
-  cout << root->key << " ";
-  traverseInOrder(root->right);
+void traverseInOrder(struct node *root) {
+    if (root == NULL) {
+        return;
+    }
+    else {
+        traverseInOrder(root->left);
+        cout << root->key << ", ";
+        traverseInOrder(root->right);
+        return;
+    }
 }
 
 // Insert a node
-struct node *insertNode(struct node *node, int key){
-  if(node == NULL){
-    struct node *node = new struct node;
-    node->key = key;
-    node->left = NULL;
-    node->right = NULL;
-    return node;
-  }
-  else {
-    if(key<=node->key){
-      node->left = insertNode(node->left,key);
-      return node;
+struct node *insertNode(struct node *node, int key) {
+    if (node == NULL) {
+        struct node *node = new struct node;
+        node->key = key;
+        node->left = NULL;
+        node->right = NULL;
+        return node;
     }
-    else{
-      node->right = insertNode(node->right, key);
-      return node;
+    else if (key <= node->key) {
+        node->left = insertNode(node->left, key);
+        return node;
     }
-  }
+    else {
+        node->right = insertNode(node->right, key);
+        return node;
+    }
 }
+
+struct node *successor(struct node *root) {
+    while (root->left == NULL) {
+        root = root->left;
+    }
+    return root;
+}
+
 // Deleting a node
 struct node *deleteNode(struct node *root, int key) {
-  if(root == NULL){
-    return root;
-  }
-  else{
-    if(key < root->key){
-      root-> left = deleteNode(root->left, key);
-      return root;
+    if (root == NULL) {
+        return root;
     }
-    else if(key > root->key){
-      root->right = deleteNode(root->right, key);
-      return root;
+    else if (key < root->key) {
+        root->left = deleteNode(root->left, key);
+        return root;
     }
-    else{
-      if(root->left == NULL && root->right == NULL){
-        delete root;
-        root = NULL;
+    else if (key > root->key) {
+        root->right = deleteNode(root->right, key);
         return root;
-      }
-      else if (root-> left == NULL){
-        struct node *temp = root;
-        root = root->right;
-        delete temp;
-        return root;
-      }
-      else if (root->right == NULL){
-        struct node *temp = root;
-        root = root->left;
-        delete temp;
-        return root;
-      }
-      else{
-        struct node *temp = root->right;
-        while(temp != NULL && temp->left != NULL){
-          temp = temp->left;
+    }
+    else {
+        if (root->left == NULL && root->right == NULL) {
+            delete root;
+            root = NULL;
+            return root;
         }
-        root->key = temp->key;
-        root->right = deleteNode(root->right, temp->key);
-        return root;
-      }
+        else if (root->left == NULL) {
+            struct node *next = root;
+            root = root->right;
+            delete next;
+            return root;
+        }
+        else if (root->right == NULL) {
+            struct node *next = root;
+            root = root->left;
+            delete next;
+            return root;
+        }
+        else {
+            struct node *next = root->right;
+            while(next != NULL && next->left != NULL){
+                next = next->left;
+            }
+            root->key = next->key;
+            root->right = deleteNode(root->right, next->key);
+            return root;
+        }
     }
-  }
 }
 
 // Driver code
